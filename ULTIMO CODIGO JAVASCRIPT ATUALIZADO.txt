@@ -1,0 +1,159 @@
+/* ================================= */
+/* PESQUISA GOOGLE (ABRE EM NOVA ABA) */
+/* ================================= */
+function pesquisarGoogle(event) {
+    event.preventDefault();
+
+    const campo = document.getElementById("campoPesquisa");
+    const termo = campo.value.trim();
+
+    if (termo === "") {
+        alert("Digite algo para pesquisar.");
+        campo.focus();
+        return;
+    }
+
+    const url = "https://www.google.com/search?q=" + encodeURIComponent(termo);
+    window.open(url, "_blank");
+}
+
+/* ================================= */
+/* ABRIR NOTÍCIA                     */
+/* ================================= */
+function abrirNoticia(titulo, texto) {
+    document.getElementById("modalTitulo").textContent = titulo;
+    document.getElementById("modalTexto").textContent = texto;
+    document.getElementById("modal").style.display = "flex";
+}
+
+/* ================================= */
+/* FECHAR NOTÍCIA                    */
+/* ================================= */
+function fecharNoticia() {
+    document.getElementById("modal").style.display = "none";
+}
+
+/* ================================= */
+/* FECHAR CLICANDO FORA              */
+/* ================================= */
+document.getElementById("modal").addEventListener("click", function (event) {
+    if (event.target === this) {
+        fecharNoticia();
+    }
+});
+
+/* ================================= */
+/* TECLA ESC FECHA MODAL             */
+/* ================================= */
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        fecharNoticia();
+    }
+});
+
+/* ================================= */
+/* MENU                              */
+/* ================================= */
+function irPara(id) {
+    const paginaInicial = document.getElementById("paginaInicial");
+    const paginaCategoria = document.getElementById("paginaCategoria");
+
+    paginaInicial.style.display = "block";
+    paginaCategoria.style.display = "none";
+
+    const elemento = document.getElementById(id);
+
+    if (elemento) {
+        setTimeout(function () {
+            elemento.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }, 50);
+    }
+}
+
+/* ================================= */
+/* TEMA                              */
+/* ================================= */
+function alternarTema() {
+    document.body.classList.toggle("claro");
+}
+
+/* ================================= */
+/* FILTRO POR CATEGORIA              */
+/* ================================= */
+function filtrar(categoria) {
+    const paginaInicial = document.getElementById("paginaInicial");
+    const paginaCategoria = document.getElementById("paginaCategoria");
+    const tituloCategoria = document.getElementById("tituloCategoria");
+    const descricaoCategoria = document.getElementById("descricaoCategoria");
+    const resultado = document.getElementById("resultadoCategoria");
+
+    paginaInicial.style.display = "none";
+    paginaCategoria.style.display = "block";
+    resultado.innerHTML = "";
+
+    if (categoria === "Grega") {
+        tituloCategoria.innerHTML = "🏛️ Mitologia Grega";
+        descricaoCategoria.innerHTML = "Explore as histórias dos deuses do Olimpo, heróis, criaturas e antigas lendas da mitologia grega.";
+    } else if (categoria === "Nórdica") {
+        tituloCategoria.innerHTML = "⚔️ Mitologia Nórdica";
+        descricaoCategoria.innerHTML = "Explore histórias de Odin, Thor, Loki, Asgard, Mjölnir e das antigas tradições nórdicas.";
+    } else if (categoria === "Egípcia") {
+        tituloCategoria.innerHTML = "𓂀 Mitologia Egípcia";
+        descricaoCategoria.innerHTML = "Explore histórias sobre os antigos deuses egípcios, faraós, criaturas e mistérios do Egito.";
+    } else if (categoria === "Brasileira") {
+        tituloCategoria.innerHTML = "🌳 Lendas Brasileiras";
+        descricaoCategoria.innerHTML = "Explore as lendas populares brasileiras, como Curupira, Saci, Iara e muitas outras histórias.";
+    }
+
+    const cards = document.querySelectorAll("#noticias .card");
+    let encontrou = false;
+
+    cards.forEach(function (card) {
+        const texto = card.innerText.toLowerCase();
+
+        if (texto.includes(categoria.toLowerCase())) {
+            const copia = card.cloneNode(true);
+            const botao = copia.querySelector(".ler");
+
+            if (botao) {
+                botao.removeAttribute("onclick");
+                botao.onclick = function () {
+                    const titulo = copia.querySelector("h3").innerText;
+                    const textoCard = copia.querySelector("p").innerText;
+                    abrirNoticia(titulo, textoCard);
+                };
+            }
+
+            resultado.appendChild(copia);
+            encontrou = true;
+        }
+    });
+
+    if (!encontrou) {
+        resultado.innerHTML = "<p>Ainda não existem notícias dessa categoria.</p>";
+    }
+
+    setTimeout(function () {
+        paginaCategoria.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }, 50);
+}
+
+/* ================================= */
+/* BOTÃO VOLTAR                      */
+/* ================================= */
+function voltarCategorias() {
+    document.getElementById("paginaCategoria").style.display = "none";
+    document.getElementById("paginaInicial").style.display = "block";
+
+    const categorias = document.getElementById("categorias");
+    categorias.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
